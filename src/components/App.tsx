@@ -1,4 +1,6 @@
 import React from 'react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import styled from 'styled-components';
 
 import Board from './Board';
@@ -14,7 +16,9 @@ const Wrapper = styled.div`
 const App: React.FC = () => {
   return (
     <Wrapper>
-      <Board />
+      <DndProvider backend={HTML5Backend}>
+        <Board />
+      </DndProvider>
     </Wrapper>
   );
 };

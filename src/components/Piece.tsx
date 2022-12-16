@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import pieceTypeMap from './utils/piece-type-map';
 
-import { ActivePiece, Color } from './utils/types';
+import pieceTypeMap from '../utils/piece-type-map';
+
+import { ActivePiece, Color } from '../utils/types';
 
 const Wrapper = styled.div<{ pieceColor: Color }>`
   display: flex;

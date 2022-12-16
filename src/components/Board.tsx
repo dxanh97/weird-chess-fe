@@ -2,9 +2,9 @@ import React, { useMemo, useState } from 'react';
 import { keyBy } from 'lodash';
 import styled from 'styled-components';
 
-import { Color } from './utils/types';
-import { initialPieces } from './utils/constants';
-import { getRanksOrder, getFilesOrder } from './utils/utils';
+import { Color } from '../utils/types';
+import { initialPieces } from '../utils/constants';
+import { getRanksOrder, getFilesOrder } from '../utils/utils';
 
 import Piece from './Piece';
 
