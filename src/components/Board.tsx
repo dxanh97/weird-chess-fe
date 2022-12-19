@@ -4,9 +4,9 @@ import styled from 'styled-components';
 
 import { Color } from '../utils/types';
 import { initialPieces } from '../utils/constants';
-import { getRanksOrder, getFilesOrder } from '../utils/utils';
+import { getRanksOrder, getFilesOrder } from '../utils/helpers';
 
-import Piece from './Piece';
+import Square from './Square';
 
 const { Light, Dark } = Color;
 
@@ -27,21 +27,6 @@ const Ruler = styled.div<{ type: 'ranks' | 'files' }>`
 const FlexRow = styled.div`
   display: flex;
   flex-direction: row;
-`;
-
-const Square = styled.div<{
-  squareColor: Color;
-}>`
-  width: 50px;
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: ${(props) =>
-    props.squareColor === Light ? '#db9202' : '#4c9955'};
-  color: white;
-  cursor: pointer;
-  user-select: none;
 `;
 
 const Board: React.FC = () => {
@@ -91,12 +76,11 @@ const Board: React.FC = () => {
                 return (
                   <Square
                     key={file}
-                    squareColor={
-                      (rankIndex + fileIndex) % 2 === 0 ? Light : Dark
-                    }
-                  >
-                    {piece && <Piece {...piece} />}
-                  </Square>
+                    file={file}
+                    rank={rank}
+                    color={(fileIndex + rankIndex) % 2 === 0 ? Light : Dark}
+                    piece={piece}
+                  />
                 );
               })}
             </FlexRow>

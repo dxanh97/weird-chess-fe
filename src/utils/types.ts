@@ -14,8 +14,8 @@ export enum Color {
   Light = 'LIGHT',
 }
 
-type File = typeof files[number];
-type Rank = typeof ranks[number];
+export type File = typeof files[number];
+export type Rank = typeof ranks[number];
 
 export interface ActivePiece {
   type: PieceType;
