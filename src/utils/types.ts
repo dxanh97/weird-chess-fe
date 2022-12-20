@@ -16,9 +16,10 @@ export enum Color {
 
 export type File = typeof files[number];
 export type Rank = typeof ranks[number];
+export type Position = [File, Rank];
 
 export interface ActivePiece {
   type: PieceType;
   color: Color;
-  position: [File, Rank];
+  position: Position;
 }

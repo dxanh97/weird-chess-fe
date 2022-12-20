@@ -10,41 +10,68 @@ import {
   FaChessPawn,
 } from 'react-icons/fa';
 
-import { ActivePiece, Color } from '../utils/types';
+import { ActivePiece, Color, Position } from '../utils/types';
 import { PieceType } from '../utils/types';
 
 const pieceTypeMap = {
-  [PieceType.King]: <FaChessKing />,
-  [PieceType.Queen]: <FaChessQueen />,
-  [PieceType.Rook]: <FaChessRook />,
-  [PieceType.Bishop]: <FaChessBishop />,
-  [PieceType.Knight]: <FaChessKnight />,
-  [PieceType.Pawn]: <FaChessPawn />,
+  [PieceType.King]: FaChessKing,
+  [PieceType.Queen]: FaChessQueen,
+  [PieceType.Rook]: FaChessRook,
+  [PieceType.Bishop]: FaChessBishop,
+  [PieceType.Knight]: FaChessKnight,
+  [PieceType.Pawn]: FaChessPawn,
 };
 
-const Wrapper = styled.div<{ pieceColor: Color; opacity: number }>`
+const Wrapper = styled.div<{
+  pieceColor: Color;
+  opacity: number;
+  isDragging: boolean;
+}>`
   display: flex;
-  svg {
-    fill: ${(props) => (props.pieceColor === Color.Light ? 'white' : 'black')};
-    height: 30px;
-    width: 30px;
-  }
+  opacity: ${(props) => props.opacity};
+  background: none;
+  transform: translate(0, 0);
 `;
 
-const Piece: React.FC<ActivePiece> = ({ type, color, position }) => {
-  const [{ opacity }, dragRef] = useDrag(
+interface Props extends ActivePiece {
+  onDragEnd: (fromPosition: Position, toPosition: Position) => void;
+}
+
+const Piece: React.FC<Props> = ({ type, color, position, onDragEnd }) => {
+  const [{ opacity, isDragging }, dragRef] = useDrag(
     () => ({
-      type,
+      type: 'piece',
+      item: { position, type, color },
       collect: (monitor) => ({
-        opacity: monitor.isDragging() ? 0.5 : 1,
+        opacity: monitor.isDragging() ? 0.3 : 1,
+        isDragging: monitor.isDragging(),
       }),
+      end: (item, monitor) => {
+        const dropResult = monitor.getDropResult() as any;
+        const toPosition: ActivePiece['position'] = dropResult.position;
+        onDragEnd(position, toPosition);
+      },
     }),
     [],
   );
 
+  const PieceType = pieceTypeMap[type];
+
+  const pieceNode = (
+    <PieceType
+      fill={color === Color.Light ? 'white' : 'black'}
+      style={{ height: 30, width: 30, cursor: 'grab' }}
+    />
+  );
+
   return (
-    <Wrapper ref={dragRef} pieceColor={color} opacity={opacity}>
-      {pieceTypeMap[type]}
+    <Wrapper
+      ref={dragRef}
+      pieceColor={color}
+      opacity={opacity}
+      isDragging={isDragging}
+    >
+      {pieceNode}
     </Wrapper>
   );
 };

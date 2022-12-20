@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from 'react';
-import { keyBy } from 'lodash';
+import { Dictionary, keyBy } from 'lodash';
 import styled from 'styled-components';
 
-import { Color } from '../utils/types';
+import { ActivePiece, Color, Position } from '../utils/types';
 import { initialPieces } from '../utils/constants';
 import { getRanksOrder, getFilesOrder } from '../utils/helpers';
 
@@ -31,11 +31,11 @@ const FlexRow = styled.div`
 
 const Board: React.FC = () => {
   const [playerSide] = useState<Color>(Light);
-  const [pieces] = useState(initialPieces);
+  const [activePieces, setActivePieces] = useState(initialPieces);
 
   const activePieceMap = useMemo(
-    () => keyBy(pieces, (p) => p.position.join('')),
-    [pieces],
+    () => keyBy(activePieces, (p) => p.position.join('')),
+    [activePieces],
   );
 
   const ranks = useMemo(() => getRanksOrder(playerSide), [playerSide]);
@@ -63,6 +63,20 @@ const Board: React.FC = () => {
     [ranks],
   );
 
+  const handleOnPieceDrop = (fromPosition: Position, toPosition: Position) => {
+    console.log(fromPosition, toPosition);
+    const piece = activePieceMap[fromPosition.join('')];
+    const tmp: Dictionary<ActivePiece> = {
+      ...activePieceMap,
+      [toPosition.join('')]: {
+        ...piece,
+        position: toPosition,
+      },
+    };
+    delete tmp[fromPosition.join('')];
+    setActivePieces(Object.values(tmp));
+  };
+
   return (
     <div>
       {fileRuler}
@@ -80,6 +94,7 @@ const Board: React.FC = () => {
                     rank={rank}
                     color={(fileIndex + rankIndex) % 2 === 0 ? Light : Dark}
                     piece={piece}
+                    onPieceDrop={handleOnPieceDrop}
                   />
                 );
               })}
