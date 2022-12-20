@@ -31,6 +31,7 @@ const FlexRow = styled.div`
 
 const Board: React.FC = () => {
   const [playerSide] = useState<Color>(Light);
+  const [moveCount, setMoveCount] = useState(0);
   const [activePieces, setActivePieces] = useState(initialPieces);
 
   const activePieceMap = useMemo(
@@ -64,7 +65,8 @@ const Board: React.FC = () => {
   );
 
   const handleOnPieceDrop = (fromPosition: Position, toPosition: Position) => {
-    console.log(fromPosition, toPosition);
+    if (fromPosition.join() === toPosition.join()) return;
+
     const piece = activePieceMap[fromPosition.join('')];
     const tmp: Dictionary<ActivePiece> = {
       ...activePieceMap,
@@ -75,6 +77,7 @@ const Board: React.FC = () => {
     };
     delete tmp[fromPosition.join('')];
     setActivePieces(Object.values(tmp));
+    setMoveCount((c) => c + 1);
   };
 
   return (
@@ -89,7 +92,7 @@ const Board: React.FC = () => {
                 const piece = activePieceMap[`${file}${rank}`];
                 return (
                   <Square
-                    key={file}
+                    key={moveCount + file}
                     file={file}
                     rank={rank}
                     color={(fileIndex + rankIndex) % 2 === 0 ? Light : Dark}
